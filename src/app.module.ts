@@ -1,48 +1,26 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-
 import { AppController } from './app.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostagemModule } from './postagem/postagem.module';
 import { TemaModule } from './tema/tema.module';
 import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { ConfigModule } from '@nestjs/config';
+import { ProdService } from './data/services/prod.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      useFactory: () => {
-        // PRODUÇÃO (Render)
-        if (process.env.NODE_ENV === 'production') {
-          return {
-            type: 'postgres',
-            url: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false },
-            synchronize: true,
-            autoLoadEntities: true,
-          };
-        }
-
-        return {
-          type: 'mysql',
-          host: 'localhost',
-          port: 3307, 
-          username: 'blog',
-          password: 'admin',
-          database: 'db_blogpessoal',
-          autoLoadEntities: true,
-          synchronize: true,
-        };
-      },
+      useClass:ProdService,
+      imports:[ConfigModule]
     }),
-
     PostagemModule,
     TemaModule,
     AuthModule,
     UsuarioModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
