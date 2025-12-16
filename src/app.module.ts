@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProdService } from './data/services/prod.service';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { ProdService } from './data/services/prod.service';
     UsuarioModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}
